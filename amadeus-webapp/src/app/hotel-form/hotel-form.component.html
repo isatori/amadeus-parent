@@ -1,0 +1,91 @@
+<div class="container-fluid mb-5 border border-light p-5">
+	<h1>Hotel Search</h1>
+	<form #hotelForm="ngForm" (ngSubmit)="onSubmit(hotelForm.value)">
+
+		<div class="form-group">
+			<label for="location">Location</label>
+			<input 
+				required 
+				ngModel
+				name="location" 
+				#location="ngModel" 
+				id="location" 
+				type="text" 
+				class="form-control"
+				pattern="[A-Z]{3}" minlength="3" maxlength="3"
+				placeholder="Airports IATA code">
+			<div class="alert alert-danger" *ngIf="location.touched && !location.valid">
+				<div *ngIf="location.errors.required">Location is required.</div>
+				<div *ngIf="location.errors.minlength">Location should be 3 characters IATA code.</div>
+				<div *ngIf="location.errors.pattern">Location does not match IATA codes.</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="check_in">Check in Date</label>
+			<input 
+				ngModel 
+				name="check_in" 
+				#check_in="ngModel" 
+				id="check_in" 
+				type="date" 
+				class="form-control"
+				required>
+			<div class="alert alert-danger" 
+				*ngIf="check_in.touched && !check_in.valid">
+				Check in Date is required.</div>
+		</div>
+		<div class="form-group">
+			<label for="check_out">Check out Date</label>
+			<input 
+				ngModel 
+				name="check_out" 
+				#check_out="ngModel" 
+				id="check_out" 
+				type="date" 
+				class="form-control" 
+				required>
+			<div class="alert alert-danger" 
+				*ngIf="check_out.touched && !check_out.valid">
+				Check out Date is required.</div>
+		</div>
+		<button [disabled]="!hotelForm.form.valid" class="btn btn-primary" type="submit" >
+			Search</button>
+	</form>
+</div>
+
+<div *ngIf="hotelList?.length > 0" class="container-fluid">
+  <div class="table-responsive text-nowrap border border-light p-5">
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">Hotel</th>
+          <th scope="col">Address</th>
+          <th scope="col">Phone</th>
+          <th scope="col">Rate</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr *ngFor="let hotel of hotelList">
+          <th scope="row"></th>
+          <td>{{hotel.property_name}}</td>
+          <td>
+            {{hotel.address.line1}},
+            {{hotel.address.city}},
+            {{hotel.address.region}},
+            {{hotel.address.country}}.
+            {{hotel.address.postal_code}}
+          </td>
+          <ng-container *ngFor="let contact of hotel.contacts">
+            <td *ngIf="contact.type == 'PHONE'">{{contact.detail}}</td>
+          </ng-container>
+          <td>{{hotel.min_daily_rate.amount}}</td>
+        </tr>
+        
+      </tbody>
+    </table>
+
+  </div>
+</div>
